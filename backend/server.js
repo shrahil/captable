@@ -56,6 +56,7 @@ const shareClassRoutes = require('./routes/shareClass.routes');
 const vestingScheduleRoutes = require('./routes/vestingSchedule.routes');
 const optionPlanRoutes = require('./routes/optionPlan.routes');
 const reportRoutes = require('./routes/report.routes');
+const equityHoldingRoutes = require('./routes/equityHolding.routes');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -65,6 +66,7 @@ app.use('/api/share-classes', shareClassRoutes);
 app.use('/api/vesting-schedules', vestingScheduleRoutes);
 app.use('/api/option-plans', optionPlanRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/equity-holdings', equityHoldingRoutes);
 
 // Root route
 app.get('/', (req, res) => {

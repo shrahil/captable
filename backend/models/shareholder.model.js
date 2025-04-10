@@ -3,7 +3,7 @@ const db = require('../utils/db');
 
 // Create a new shareholder
 async function create(shareholderData) {
-  const { name, type, email, phone, address, tax_id, notes } = shareholderData;
+  const { name, type, email, phone = null, address = null, tax_id = null, notes = null } = shareholderData;
   
   const sql = `
     INSERT INTO shareholders (name, type, email, phone, address, tax_id, notes)
@@ -21,7 +21,7 @@ async function findById(id) {
 
 // Update shareholder
 async function update(id, shareholderData) {
-  const { name, type, email, phone, address, tax_id, notes } = shareholderData;
+  const { name, type, email, phone = null, address = null, tax_id = null, notes = null } = shareholderData;
   
   const sql = `
     UPDATE shareholders

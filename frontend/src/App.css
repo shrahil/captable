@@ -6,7 +6,7 @@
 }
 
 .app-header {
-  background-color: var(--primary-color);
+  background-color: #1e88e5;
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -161,32 +161,99 @@ main {
 }
 
 .sidebar .nav-link {
-  color: var(--secondary-color);
+  color: #666;
   padding: 0.5rem 1rem;
   border-radius: 0;
   transition: all 0.2s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar .nav-link i,
+.sidebar .nav-link svg {
+  margin-right: 0.5rem;
+  color: #1e88e5;
 }
 
 .sidebar .nav-link:hover {
-  background-color: rgba(52, 152, 219, 0.1);
+  background-color: rgba(30, 136, 229, 0.1);
+  color: #1e88e5;
 }
 
 .sidebar .nav-link.active {
-  color: var(--primary-color);
-  background-color: rgba(52, 152, 219, 0.1);
-  border-left: 3px solid var(--primary-color);
+  color: #1e88e5;
+  background-color: rgba(30, 136, 229, 0.1);
+  border-left: 3px solid #1e88e5;
 }
 
 .sidebar-heading {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.1rem;
+  color: #999;
+  padding: 1rem 1rem 0.5rem;
 }
 
 .main-content {
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+}
+
+/* Dashboard card styles - match screenshot */
+.dashboard-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.dashboard-card h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.dashboard-card .count {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 15px 0;
+}
+
+.dashboard-card .view-link {
+  text-align: right;
+  font-weight: 500;
+}
+
+.dashboard-card .view-link a {
+  color: #1e88e5;
+  text-decoration: none;
+}
+
+.dashboard-card .view-link a:hover {
+  text-decoration: underline;
+}
+
+/* Nav styles to match screenshot */
+.top-nav {
+  background-color: #1e88e5;
+  padding: 15px 20px;
+  color: white;
+}
+
+.top-nav a {
+  color: white;
+  text-decoration: none;
+  margin-right: 20px;
+  font-weight: 500;
+}
+
+.top-nav .brand {
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
 /* Responsive adjustments */

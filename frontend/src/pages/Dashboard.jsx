@@ -1,104 +1,139 @@
-import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { shareholderService, stockOptionService } from '../services/api';
 
 const Dashboard = () => {
   const { user, isAdmin } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dashboardData, setDashboardData] = useState({
+    shareholderCount: '--',
+    shareClassCount: '--',
+    stockOptionCount: '--'
+  });
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch cap table data to get shareholder and share class counts
+        const capTableResponse = await shareholderService.getCapTable();
+        
+        // Fetch stock options data
+        const optionsResponse = await stockOptionService.getAll({});
+        
+        setDashboardData({
+          shareholderCount: capTableResponse.data.shareholders?.length || '--',
+          shareClassCount: capTableResponse.data.share_classes?.length || '--',
+          stockOptionCount: optionsResponse.data.options?.length || '--'
+        });
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  // Display name based on user information
+  const displayName = user?.first_name || (isAdmin ? 'Admin' : 'User');
 
   return (
-    <div className="container py-4">
-      <div className="row mb-4">
-        <div className="col">
-          <h2>Welcome, {user?.first_name}</h2>
-          <p className="text-muted">Cap Table Management Dashboard</p>
-        </div>
-      </div>
+    <div className="container pt-3">
+      <h2>Welcome, {displayName}</h2>
+      <p className="text-muted mb-4">Cap Table Management Dashboard</p>
 
-      <div className="dashboard-grid">
-        <div className="card stat-card">
-          <h3>Shareholders</h3>
-          <div className="stat-value">
-            <i className="bi bi-people me-2"></i>
-            --
-          </div>
-          <Link to="/shareholders" className="btn btn-outline-primary">View Shareholders</Link>
-        </div>
-
-        <div className="card stat-card">
-          <h3>Share Classes</h3>
-          <div className="stat-value">
-            <i className="bi bi-diagram-3 me-2"></i>
-            --
-          </div>
-          <Link to="/share-classes" className="btn btn-outline-primary">View Share Classes</Link>
-        </div>
-
-        <div className="card stat-card">
-          <h3>Stock Options</h3>
-          <div className="stat-value">
-            <i className="bi bi-file-earmark-text me-2"></i>
-            --
-          </div>
-          <Link to="/options" className="btn btn-outline-primary">View Options</Link>
-        </div>
-
-        <div className="card stat-card">
-          <h3>Option Plans</h3>
-          <div className="stat-value">
-            <i className="bi bi-folder me-2"></i>
-            --
-          </div>
-          <Link to="/option-plans" className="btn btn-outline-primary">View Plans</Link>
-        </div>
-      </div>
-
-      <div className="row mt-4">
-        <div className="col-md-6 mb-4">
-          <div className="card h-100">
-            <div className="card-header">
-              <h5 className="card-title mb-0">Quick Actions</h5>
-            </div>
-            <div className="card-body">
-              <div className="d-grid gap-2">
-                <Link to="/cap-table" className="btn btn-primary">
-                  <i className="bi bi-table me-2"></i>
-                  View Cap Table
-                </Link>
-                {isAdmin && (
-                  <>
-                    <Link to="/shareholders/new" className="btn btn-outline-primary">
-                      <i className="bi bi-person-plus me-2"></i>
-                      Add Shareholder
-                    </Link>
-                    <Link to="/options/new" className="btn btn-outline-primary">
-                      <i className="bi bi-file-earmark-plus me-2"></i>
-                      Grant Stock Options
-                    </Link>
-                  </>
-                )}
-                <Link to="/reports" className="btn btn-outline-primary">
-                  <i className="bi bi-file-earmark-bar-graph me-2"></i>
-                  Generate Reports
-                </Link>
+      {/* Shareholders Section */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 className="mb-2">Shareholders</h3>
+              <div>
+                <i className="bi bi-people me-2"></i>
+                {dashboardData.shareholderCount}
               </div>
             </div>
-          </div>
-        </div>
-
-        <div className="col-md-6 mb-4">
-          <div className="card h-100">
-            <div className="card-header">
-              <h5 className="card-title mb-0">Upcoming Vesting Events</h5>
-            </div>
-            <div className="card-body">
-              <p className="text-muted">Loading upcoming vesting events...</p>
-            </div>
-            <div className="card-footer">
-              <Link to="/reports/vesting" className="btn btn-sm btn-link">View All Vesting Events</Link>
-            </div>
+            <Link to="/shareholders" className="text-primary">
+              View Shareholders
+            </Link>
           </div>
         </div>
       </div>
+
+      {/* Share Classes Section */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 className="mb-2">Share Classes</h3>
+              <div>
+                <i className="bi bi-diagram-3 me-2"></i>
+                {dashboardData.shareClassCount}
+              </div>
+            </div>
+            <Link to="/share-classes" className="text-primary">
+              View Share Classes
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Stock Options Section */}
+      <div className="card mb-3">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h3 className="mb-2">Stock Options</h3>
+              <div>
+                <i className="bi bi-file-earmark-text me-2"></i>
+                {dashboardData.stockOptionCount}
+              </div>
+            </div>
+            <Link to="/options" className="text-primary">
+              View Options
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Only show additional admin actions if the user is an admin */}
+      {isAdmin && (
+        <div className="mt-4">
+          <h3>Quick Actions</h3>
+          <div className="row mt-3">
+            <div className="col-md-3 mb-3">
+              <Link to="/cap-table" className="btn btn-primary w-100">
+                <i className="bi bi-table me-2"></i>
+                View Cap Table
+              </Link>
+            </div>
+            <div className="col-md-3 mb-3">
+              <Link to="/shareholders/new" className="btn btn-outline-primary w-100">
+                <i className="bi bi-person-plus me-2"></i>
+                Add Shareholder
+              </Link>
+            </div>
+            <div className="col-md-3 mb-3">
+              <Link to="/options/new" className="btn btn-outline-primary w-100">
+                <i className="bi bi-file-earmark-plus me-2"></i>
+                Grant Options
+              </Link>
+            </div>
+            <div className="col-md-3 mb-3">
+              <Link to="/import" className="btn btn-outline-primary w-100">
+                <i className="bi bi-upload me-2"></i>
+                Import Data
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

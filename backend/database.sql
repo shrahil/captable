@@ -165,14 +165,14 @@ CREATE TABLE IF NOT EXISTS equity_transactions (
   INDEX idx_transaction_date (transaction_date)
 );
 
--- Insert default share classes
-INSERT INTO share_classes (name, description, is_preferred)
+-- Insert default share classes only if they don't exist
+INSERT IGNORE INTO share_classes (name, description, is_preferred)
 VALUES 
 ('Common', 'Standard common stock', FALSE),
 ('Series A Preferred', 'Series A preferred stock with 1x liquidation preference', TRUE);
 
--- Insert default vesting schedules
-INSERT INTO vesting_schedules (name, total_duration_months, cliff_months, frequency, description)
+-- Insert default vesting schedules only if they don't exist
+INSERT IGNORE INTO vesting_schedules (name, total_duration_months, cliff_months, frequency, description)
 VALUES 
 ('Standard 4-Year', 48, 12, 'monthly', '4-year vesting with 1-year cliff, monthly thereafter'),
 ('Accelerated 3-Year', 36, 12, 'monthly', '3-year vesting with 1-year cliff, monthly thereafter'),

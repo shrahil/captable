@@ -18,7 +18,12 @@ const CapTable = () => {
       try {
         setLoading(true);
         const response = await shareholderService.getCapTable();
-        setCapTable(response.data);
+        // Ensure we have proper default values for all properties
+        setCapTable({
+          total_shares: response.data.total_shares || 0,
+          shareholders: response.data.shareholders || [],
+          share_classes: response.data.share_classes || []
+        });
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to load cap table data');
         console.error('Error fetching cap table:', err);
@@ -32,6 +37,11 @@ const CapTable = () => {
 
   const handleExportCSV = () => {
     window.location.href = 'http://localhost:5000/api/reports/export/captable';
+  };
+
+  // A helper function to safely format numbers
+  const formatNumber = (num) => {
+    return (num || 0).toLocaleString();
   };
 
   return (
@@ -76,7 +86,7 @@ const CapTable = () => {
               <div className="card h-100">
                 <div className="card-body">
                   <h5 className="card-title">Total Shares</h5>
-                  <h2 className="display-6">{capTable.total_shares.toLocaleString()}</h2>
+                  <h2 className="display-6">{formatNumber(capTable.total_shares)}</h2>
                 </div>
               </div>
             </div>
@@ -103,32 +113,36 @@ const CapTable = () => {
               <h5 className="card-title mb-0">Ownership by Share Class</h5>
             </div>
             <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Share Class</th>
-                      <th>Total Shares</th>
-                      <th>% of Total</th>
-                      <th>Shareholders</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {capTable.share_classes.map(shareClass => (
-                      <tr key={shareClass.id}>
-                        <td>{shareClass.name}</td>
-                        <td>{shareClass.total_shares?.toLocaleString() || 0}</td>
-                        <td>
-                          {capTable.total_shares > 0
-                            ? ((shareClass.total_shares || 0) / capTable.total_shares * 100).toFixed(2) + '%'
-                            : '0.00%'}
-                        </td>
-                        <td>{shareClass.shareholder_count || 0}</td>
+              {capTable.share_classes.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Share Class</th>
+                        <th>Total Shares</th>
+                        <th>% of Total</th>
+                        <th>Shareholders</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {capTable.share_classes.map((shareClass, index) => (
+                        <tr key={shareClass.id || index}>
+                          <td>{shareClass.name || 'Unnamed Class'}</td>
+                          <td>{formatNumber(shareClass.total_shares)}</td>
+                          <td>
+                            {capTable.total_shares > 0
+                              ? (((shareClass.total_shares || 0) / capTable.total_shares * 100).toFixed(2) + '%')
+                              : '0.00%'}
+                          </td>
+                          <td>{shareClass.shareholder_count || 0}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="alert alert-info">No share classes found.</div>
+              )}
             </div>
           </div>
 
@@ -137,46 +151,50 @@ const CapTable = () => {
               <h5 className="card-title mb-0">Shareholders</h5>
             </div>
             <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Shares</th>
-                      <th>Ownership %</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {capTable.shareholders.map(shareholder => (
-                      <tr key={shareholder.id}>
-                        <td>{shareholder.name}</td>
-                        <td>
-                          <span className={`badge bg-${
-                            shareholder.type === 'founder' ? 'primary' :
-                            shareholder.type === 'investor' ? 'success' :
-                            shareholder.type === 'employee' ? 'info' :
-                            'secondary'
-                          }`}>
-                            {shareholder.type}
-                          </span>
-                        </td>
-                        <td>{shareholder.total_shares?.toLocaleString() || 0}</td>
-                        <td>{shareholder.ownership_percentage?.toFixed(2)}%</td>
-                        <td>
-                          <Link 
-                            to={`/shareholders/${shareholder.id}`} 
-                            className="btn btn-sm btn-outline-primary"
-                          >
-                            View
-                          </Link>
-                        </td>
+              {capTable.shareholders.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Shares</th>
+                        <th>Ownership %</th>
+                        <th>Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {capTable.shareholders.map((shareholder, index) => (
+                        <tr key={shareholder.id || index}>
+                          <td>{shareholder.name || 'Unnamed'}</td>
+                          <td>
+                            <span className={`badge bg-${
+                              shareholder.type === 'founder' ? 'primary' :
+                              shareholder.type === 'investor' ? 'success' :
+                              shareholder.type === 'employee' ? 'info' :
+                              'secondary'
+                            }`}>
+                              {shareholder.type || 'Other'}
+                            </span>
+                          </td>
+                          <td>{formatNumber(shareholder.total_shares)}</td>
+                          <td>{(shareholder.ownership_percentage || 0).toFixed(2)}%</td>
+                          <td>
+                            <Link 
+                              to={`/shareholders/${shareholder.id}`} 
+                              className="btn btn-sm btn-outline-primary"
+                            >
+                              View
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <div className="alert alert-info">No shareholders found.</div>
+              )}
             </div>
           </div>
         </>
