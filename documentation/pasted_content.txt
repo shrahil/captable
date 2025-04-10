@@ -1,0 +1,54 @@
+Detailed Findings
+Essential Features for Basic Equity Management Software
+Based on the analysis, the following features are essential for a very basic equity management software:
+
+Cap Table Management:
+CRUD (Create, Read, Update, Delete) operations for shareholders, allowing founders to add new investors or employees and update ownership details.
+Support for different share classes (e.g., common, preferred) to handle various equity instruments.
+Automatic calculation of ownership percentages to ensure accuracy and transparency.
+Stock Option Management:
+Issue new stock options with details like grant date, exercise price, and vesting schedule, enabling HR to manage ESOPs effectively.
+Track vested and unvested options, including handling exercises and cancellations, to monitor employee equity stakes.
+Support for common vesting terms, such as a 4-year vest with a 1-year cliff, to align with industry practices.
+Vesting Schedules:
+Define vesting terms and automatically calculate vested amounts based on time, simplifying administration for HR.
+Provide visibility into upcoming vesting events to help employees understand their equity progression.
+Basic Reporting:
+Generate cap table reports showing all shareholders and their ownership percentages, useful for investor updates and board meetings.
+Option grant reports listing all granted options with details like grant date and vesting status, aiding in compliance and transparency.
+Vesting schedule reports showing upcoming vesting events, helping admins plan and communicate with employees.
+User Management:
+Role-based access control, with admins able to manage all data and employees restricted to viewing their own option details, ensuring data security.
+Secure login with password protection, and the ability to invite new users via email, simplifying onboarding.
+Self-Hosting Capabilities:
+Easy installation on a server with clear instructions, minimizing technical barriers for founders.
+Support for common databases like MySQL or PostgreSQL, which are widely available and open-source.
+Use of Docker containers for deployment, ensuring compatibility with various server environments and simplifying setup.
+These features align with the needs of a Series A company, focusing on simplicity and essential functionality while avoiding complex compliance features like 409A valuations, which are out of scope for this basic software.
+
+User Stories and Usability
+To ensure the software meets user needs, the following user stories were developed:
+
+As a founder, I want to add new shareholders and update their ownership percentages so that I can keep track of who owns what in the company, ensuring accurate records for fundraising and investor relations.
+As an HR manager, I want to issue stock options to new employees and set their vesting schedules so that I can manage equity compensation effectively, aligning with company retention strategies.
+As an employee, I want to view my stock option details and vesting progress so that I can understand my equity stake, fostering engagement and ownership.
+As an admin, I want to generate reports on cap table and option grants so that I can provide transparency to investors and board members, supporting compliance and decision-making.
+The software should have an intuitive user interface, with clear navigation and minimal technical expertise required, ensuring usability for non-technical users like founders and HR personnel.
+
+Non-Functional Requirements
+To ensure the software is reliable and secure, the following non-functional requirements were identified:
+
+Security: Data encryption for sensitive information, secure authentication (e.g., username/password or OAuth), and role-based access control to prevent unauthorized access.
+Usability: An intuitive interface with easy navigation, minimizing the learning curve for users.
+Performance: Fast response times for typical usage scenarios, such as viewing reports or updating records, to ensure efficiency.
+Scalability: Able to handle up to 100 shareholders and 500 option grants without performance issues, suitable for early-stage growth.
+These requirements ensure the software is practical for small teams while maintaining data integrity and user satisfaction.
+
+Technical Requirements for Self-Hosting
+Given the self-hosting requirement, the following technical specifications were outlined:
+
+Technology Stack: A web-based application using HTML, CSS, JavaScript for the frontend, and Python (e.g., Django/Flask) or Node.js (e.g., Express.js) for the backend, ensuring cross-platform compatibility.
+Database: Support for MySQL or PostgreSQL, both open-source and widely used, to minimize costs and simplify maintenance.
+Deployment: Use Docker containers for easy deployment, allowing the software to run on any server with Docker installed, reducing setup complexity.
+Dependencies: Minimize external libraries, prioritizing open-source solutions to reduce maintenance overhead and ensure long-term sustainability.
+These technical requirements ensure the software can be easily installed and maintained on a company’s own server, aligning with the goal of data privacy and control.
